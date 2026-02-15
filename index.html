@@ -1,0 +1,90 @@
+
+<!doctype html>
+ <html lang="en">
+ <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Neoskksk PC Information</title>
+    <style>
+        :root{--bg:#f6f9fc;--card:#ffffff;--accent:#2b7cff;--muted:#6b7885}
+        body{font-family:Inter,Arial,sans-serif;margin:28px;background:var(--bg);color:#071029}
+        h1{margin:0 0 6px 0}
+        .card{background:var(--card);border-radius:8px;padding:16px;margin:14px 0;border:1px solid #e6eef8}
+        .label{display:block;font-weight:700;margin-bottom:8px}
+        .editable{min-height:48px;padding:10px;border:1px dashed #cfe0ff;border-radius:6px;background:#fcfeff}
+        textarea.editable{width:100%;resize:vertical;min-height:80px}
+        .hint{font-size:13px;color:var(--muted);margin-top:8px}
+        ul{padding-left:18px}
+        strong{color:#0b2236}
+    </style>
+ </head>
+ <body>
+    <h1>About moi kompudahter</h1>
+    <p class="hint">Щелкни любое светлое поле, чтобы ввести текст. Содержимое можно редактировать и сохранять локально.</p>
+
+    <section class="card" id="computer-info">
+        <label class="label">Computer Overview </label>
+        <div id="compOverview" class="editable" contenteditable="true">Пиши здесь информацию о компьютере</div>
+    </section>
+
+    <section class="card">
+        <label class="label">Автоматически обнаруженные сведения о системе</label>
+        <ul>
+            <li><strong>ОС: </strong> <span id="plat">—</span></li>
+            <li><strong>Пользователь:  </strong> <span id="ua">—</span></li>
+            <li><strong>Язык:  </strong> <span id="lang">—</span></li>
+            <li><strong>Экран: </strong> <span id="screen">—</span></li>
+            <li><strong>CPU cores:</strong> <span id="cores">—</span></li>
+            <li><strong>Память :</strong> <span id="mem">—</span></li>
+        </ul>
+        <div class="hint">Эти значения поступают из твоего браузера и помогают документировать работу устройства.</div>
+    </section>
+
+    <section class="card">
+        <label class="label">Установленное программное обеспечение / услуги (Пиши тут)</label>
+        <textarea id="software" class="editable">Введи здесь установленное программное обеспечение или службы</textarea>
+    </section>
+
+    <section class="card">
+        <label class="label">Примечания по оборудованию (Пижи тут)</label>
+        <div id="hardware" class="editable" contenteditable="true">Начинка ПК</div>
+    </section>
+
+    <section class="card">
+        <label class="label">Дополнительные заметки (Пиши тут)</label>
+        <textarea id="notes" class="editable" placeholder="Free notes..."></textarea>
+    </section>
+
+    <script>
+        // Fill auto-detected fields
+        (function fillAuto(){
+            try{
+                document.getElementById('plat').textContent = navigator.platform || 'N/A';
+                document.getElementById('ua').textContent = navigator.userAgent || 'N/A';
+                document.getElementById('lang').textContent = navigator.language || 'N/A';
+                document.getElementById('screen').textContent = (screen.width || '?') + '×' + (screen.height || '?');
+                document.getElementById('cores').textContent = navigator.hardwareConcurrency || 'N/A';
+                document.getElementById('mem').textContent = navigator.deviceMemory || 'N/A';
+            }catch(e){console.warn(e)}
+        })();
+
+        // Save/load editable fields to localStorage
+        const fields = ['compOverview','software','hardware','notes'];
+        fields.forEach(id=>{
+            const el = document.getElementById(id);
+            const key = 'hueta:' + id;
+            try{
+                const saved = localStorage.getItem(key);
+                if(saved){
+                    if(el.tagName === 'DIV') el.innerHTML = saved; else el.value = saved;
+                }
+            }catch(e){}
+            const save = ()=>{
+                try{ if(el.tagName === 'DIV') localStorage.setItem(key, el.innerHTML); else localStorage.setItem(key, el.value); }catch(e){}
+            };
+            el.addEventListener('input', save);
+            el.addEventListener('blur', save);
+        });
+    </script>
+ </body>
+ </html>
